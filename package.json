@@ -3,7 +3,7 @@
     "title" : "Sublime adapter package",
     "details": "http://github.com/prymatex/sublime",
     "description" : "",
-    "icon": "prymatex",
+    "icon": ":/sublime.png",
     "version" : "1.0",
     "homepage": "http://github.com/prymatex/sublime",
     "readme": "http://github.com/prymatex/sublime/README.md",
