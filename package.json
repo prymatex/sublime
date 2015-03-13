@@ -1,0 +1,14 @@
+{
+    "id": "org.prymatex.sublime",
+    "title" : "Sublime adapter package",
+    "details": "http://github.com/prymatex/sublime",
+    "description" : "",
+    "icon": "prymatex",
+    "version" : "1.0",
+    "homepage": "http://github.com/prymatex/sublime",
+    "readme": "http://github.com/prymatex/sublime/README.md",
+    "donate": "http://github.com/prymatex/sublime/donate.html",
+    "labels": [ "sublime" ],
+    "author" : "Prymatex Team",
+    "depends" : [ "org.prymatex.codeeditor" ]
+}
