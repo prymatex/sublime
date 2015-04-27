@@ -20,18 +20,21 @@ INHIBIT_WORD_COMPLETIONS = False
 INHIBIT_EXPLICIT_COMPLETIONS = False
 
 pmx = qapplication()
-SETTINGS = {}
+SETTINGS = {
+    "Preferences.sublime-settings": Settings(
+        pmx.settingsManager.prymatex_settings
+    )
+}
 
 def load_settings(base_name):
     if base_name not in SETTINGS:
-        if base_name == "Preferences.sublime-settings":
-            SETTINGS[base_name] = Settings(pmx.profile().settings)
-        else:
-            path = os.path.join(DESCRIPTOR.path, base_name)
-            settings = json.read_file(path)
-            if settings:
-                SETTINGS[base_name] = Settings(PrymatexSettings(base_name, settings))
-    return SETTINGS[base_name]
+        for package in pmx.packageManager.packages.values():
+            path = os.path.join(package.directory, base_name)
+            print(package, path)
+            if os.path.exists(path):
+                settings = pmx.settingsManager.getSettings(path)
+                SETTINGS[base_name] = Settings(settings)
+    return SETTINGS.get(base_name, None)
 
 def active_window():
     return Window(pmx.currentWindow())
