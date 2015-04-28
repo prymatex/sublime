@@ -1,9 +1,18 @@
 #!/usr/bin/env python
 
+from sublime.view import View
+
 class Window(object):
     def __init__(self, window):
         self._window = window
+        self._views = {}
+        self._window.editorCreated.connect(self.on_editorCreated) 
         
+    def on_editorCreated(self, editor):
+        _id = id(editor)
+        if _id not in self._views:
+            self._views[_id] = View(editor)
+
     def id(self):
         """ return int    Returns a number that uniquely identifies this window.
         """

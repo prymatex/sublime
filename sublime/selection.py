@@ -8,7 +8,6 @@ class Selection(object):
     """Maintains a set of Regions, ensuring that none overlap. The regions are kept in sorted order. 
     """
     def __init__(self):
-        super(Selection, self).__init__()
         self._regions = []
 
     # ------------- Magics

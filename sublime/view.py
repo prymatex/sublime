@@ -10,7 +10,6 @@ from .region import Region
 
 class View(object):
     def __init__(self, editor):
-        super(View, self).__init__()
         self._editor = editor
         self._command_history = []
         self._command_index = len(self._command_history) - 1

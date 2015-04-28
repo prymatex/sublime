@@ -7,7 +7,7 @@ class Region(namedtuple('Region', 'a b xpos')):
     """
     __slots__ = ()
     def __new__(cls, a, b, xpos=-1):
-        return super(Region, cls).__new__(cls, a, b, xpos)
+        return super().__new__(cls, a, b, xpos)
     
     # ------- Magics
     def __nonzero__(self):
