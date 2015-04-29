@@ -8,6 +8,9 @@ from .selection import Selection
 from .settings import Settings
 from .region import Region
 
+from sublime_plugin import LISTENERS
+from sublime_plugin import TEXT_COMMANDS
+
 class View(object):
     def __init__(self, window, editor):
         self._window = window
@@ -18,6 +21,13 @@ class View(object):
         self._event_listeners = []
         self._commands = {}
         self._content = ""
+        for cls in LISTENERS:
+            self.add_event_listener(cls())
+        for cls in TEXT_COMMANDS:
+            self.add_command(cls(self))
+
+    def editor(self):
+        return self._editor
 
     def add_event_listener(self, listener):
         self._event_listeners.append(listener)
@@ -43,7 +53,7 @@ class View(object):
     def add_command(self, command):
         names = textutils.camelcase_to_text(command.__class__.__name__).split()
         name = "_".join(names[:-1])
-        self._commands[name] = command
+        self._editor.addCommand(name, command)
 
     def on_document_contentsChange(self, position, charsRemoved, charsAdded):
         text = self._editor.toPlainText()
@@ -102,7 +112,8 @@ class View(object):
 
     def run_command(self, string, args=None):
         """return None	Runs the named TextCommand with the (optional) given arguments."""
-        self._editor.runCommand(string, args)
+        args = args or {}
+        self._editor.runCommand(string, None, **args)
 
     def size(self):
         """return int	Returns the number of character in the file."""

@@ -8,11 +8,17 @@ class Window(object):
         self._window = window
         self._views = {}
         self._window.editorCreated.connect(self.on_editorCreated) 
+        self._window.aboutToEditorDelete.connect(self.on_aboutToEditorDelete)
         
     def on_editorCreated(self, editor):
         _id = id(editor)
         if _id not in self._views:
             self._views[_id] = View(self, editor)
+
+    def on_aboutToEditorDelete(self, editor):
+        _id = id(editor)
+        if _id not in self._views:
+            del self._views[_id]
 
     def id(self):
         """ return int    Returns a number that uniquely identifies this window.
@@ -31,7 +37,6 @@ class Window(object):
         sublime.TRANSIENT. Open the file as a preview only: it won't have a tab assigned it until modified
         """
         pass
-        
     def find_open_file(self, file_name):
         """ return View    Finds the named file in the list of open files, and returns the corresponding View, or None if no such file is open.
         """
@@ -72,17 +77,15 @@ class Window(object):
         """ return (group, index)    Returns the group, and index within the group of the view. Returns -1 if not found.
         """
         pass
-
+        
     def set_view_index(self, view, group, index):
         """ return None    Moves the view to the given group and index.
         """
         pass
-        
     def folders(self):
         """ return [String]    Returns a list of the currently open folders.
         """
-        print("pide folders")
-
+        pass
     def project_file_name(self):
         """ return String    Returns name of the currently opened project file, if any.
         """

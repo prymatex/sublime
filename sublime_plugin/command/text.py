@@ -1,6 +1,27 @@
 #!/usr/bin/env python
 
-class TextCommand(object):
+from prymatex.gui.codeeditor.modes import CodeEditorComplitionMode
+
+TEXT_COMMANDS = []
+
+class TextCommandMeta(type):
+    def __new__(meta, name, bases, dct):
+        super_new = super(TextCommandMeta, meta).__new__
+
+        # Also ensure initialization is only performed for subclasses of TextCommandMeta
+        # (excluding TextCommandMeta class itself).
+        parents = [b for b in bases if isinstance(b, TextCommandMeta)]
+        if not parents:
+            return super_new(meta, name, bases, dct)
+            
+        new_class = super_new(meta, name, bases, dct)
+        TEXT_COMMANDS.append(new_class)
+        return new_class
+
+class TextCommand(metaclass=TextCommandMeta):
+    def __init__(self, view):
+        self.view = view
+
     def run(self, edit, *args, **kwargs):
         """None Called when the command is run.
         """
@@ -23,4 +44,17 @@ class TextCommand(object):
         
 class InsertSnippetCommand(TextCommand):
     pass
+
+class AutoCompleteCommand(TextCommand):
+    def __init__(self, view):
+        self.view = view
+        self.editor = view.editor()
+        self.complition = self.editor.findAddon(CodeEditorComplitionMode)
     
+    def run(self, edit, *args, **kwargs):
+        alreadyTyped, start, end = self.editor.wordUnderCursor(direction="left", search=True)
+        completions = self.view.query_completions(alreadyTyped, self.view.sel())
+        print(completions)
+
+class HideAutoCompleteCommand(TextCommand):
+    pass
