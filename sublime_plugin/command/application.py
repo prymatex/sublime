@@ -1,6 +1,22 @@
 #!/usr/bin/env python
 
-class ApplicationCommand(object):
+APPLICATION_COMMANDS = []
+
+class ApplicationCommandMeta(type):
+    def __new__(meta, name, bases, dct):
+        super_new = super(ApplicationCommandMeta, meta).__new__
+
+        # Also ensure initialization is only performed for subclasses of ApplicationCommandMeta
+        # (excluding ApplicationCommandMeta class itself).
+        parents = [b for b in bases if isinstance(b, ApplicationCommandMeta)]
+        if not parents:
+            return super_new(meta, name, bases, dct)
+            
+        new_class = super_new(meta, name, bases, dct)
+        APPLICATION_COMMANDS.append(new_class)
+        return new_class
+
+class ApplicationCommand(metaclass=ApplicationCommandMeta):
     def run(self, *args, **kwargs):
         """None Called when the command is run.
         """

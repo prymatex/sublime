@@ -1,5 +1,21 @@
 #!/usr/bin/env python
 
+WINDOW_COMMANDS = []
+
+class WindowCommandMeta(type):
+    def __new__(meta, name, bases, dct):
+        super_new = super(WindowCommandMeta, meta).__new__
+
+        # Also ensure initialization is only performed for subclasses of WindowCommandMeta
+        # (excluding WindowCommandMeta class itself).
+        parents = [b for b in bases if isinstance(b, WindowCommandMeta)]
+        if not parents:
+            return super_new(meta, name, bases, dct)
+            
+        new_class = super_new(meta, name, bases, dct)
+        WINDOW_COMMANDS.append(new_class)
+        return new_class
+
 class WindowCommand(object):
     def run(self, *args, **kwargs):
         """None Called when the command is run.

@@ -1,17 +1,23 @@
 #!/usr/bin/env python
 
-from sublime.view import View
+from .view import View
 
 class Window(object):
     def __init__(self, window):
         self._window = window
         self._views = {}
-        self._window.editorCreated.connect(self.on_editorCreated) 
+        self._window.editorCreated.connect(self.on_editorCreated)
+        self._window.aboutToEditorDelete.connect(self.on_aboutToEditorDelete)
         
     def on_editorCreated(self, editor):
         _id = id(editor)
         if _id not in self._views:
             self._views[_id] = View(editor)
+
+    def on_aboutToEditorDelete(self, editor):
+        _id = id(editor)
+        if _id not in self._views:
+            del self._views[_id]
 
     def id(self):
         """ return int    Returns a number that uniquely identifies this window.
@@ -22,6 +28,7 @@ class Window(object):
         """ return View    Creates a new file. The returned view will be empty, and its is_loaded method will return True.
         """
         pass
+
     def open_file(self, file_name, flags=None):
         """ return View    Opens the named file, and returns the corresponding view. If the file is already opened, it will be brought to the front. Note that as file loading is asynchronous, operations on the returned view won't be possible until its is_loading() method returns False.
         The optional flags parameter is a bitwise combination of:
@@ -29,58 +36,72 @@ class Window(object):
         sublime.TRANSIENT. Open the file as a preview only: it won't have a tab assigned it until modified
         """
         pass
+        
     def find_open_file(self, file_name):
         """ return View    Finds the named file in the list of open files, and returns the corresponding View, or None if no such file is open.
         """
         pass
+        
     def active_view(self):
         """ return View    Returns the currently edited view.
         """
         pass
+        
     def active_view_in_group(self, group):
         """ return View    Returns the currently edited view in the given group.
         """
         pass
+        
     def views(self):
         """ return [View]    Returns all open views in the window.
         """
         pass
+        
     def views_in_group(self, group):
         """ return [View]    Returns all open views in the given group.
         """
         pass
+        
     def num_groups(self):
         """ return int    Returns the number of view groups in the window.
         """
         pass
+        
     def active_group(self):
         """ return int    Returns the index of the currently selected group.
         """
         pass
+        
     def focus_group(self, group):
         """ return None    Makes the given group active.
         """
         pass
+        
     def focus_view(self, view):
         """ return None    Switches to the given view.
         """
         pass
+        
     def get_view_index(self, view):
         """ return (group, index)    Returns the group, and index within the group of the view. Returns -1 if not found.
         """
         pass
+        
     def set_view_index(self, view, group, index):
         """ return None    Moves the view to the given group and index.
         """
         pass
+        
     def folders(self):
         """ return [String]    Returns a list of the currently open folders.
         """
         pass
+        
     def project_file_name(self):
         """ return String    Returns name of the currently opened project file, if any.
         """
         pass
+        
     def project_data(self):
         """ return Dictionary    Returns the project data associated with the current window. The data is in the same format as the contents of a .sublime-project file.
         """

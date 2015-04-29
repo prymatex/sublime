@@ -13,7 +13,9 @@ from .edit import Edit
 from .region import Region
 from .selection import Selection
 from .settings import Settings
+from .view import View
 from .window import Window
+from sublime_plugin import LISTENERS
 
 INHIBIT_WORD_COMPLETIONS = False
 INHIBIT_EXPLICIT_COMPLETIONS = False
