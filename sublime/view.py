@@ -9,7 +9,8 @@ from .settings import Settings
 from .region import Region
 
 class View(object):
-    def __init__(self, editor):
+    def __init__(self, window, editor):
+        self._window = window
         self._editor = editor
         self._command_history = []
         self._command_index = len(self._command_history) - 1
@@ -97,7 +98,8 @@ class View(object):
 
     def window(self):
         """return Window	Returns a reference to the window containing the view."""
-        pass
+        return self._window
+
     def run_command(self, string, args=None):
         """return None	Runs the named TextCommand with the (optional) given arguments."""
         self._editor.runCommand(string, args)

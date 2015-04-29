@@ -42,7 +42,7 @@ def load_settings(base_name):
 def on_windowCreated(window):
     _id = id(window)
     if _id not in WINDOWS:
-        WINDOWS[_id] = Window(window)
+        WINDOWS[_id] = Window(pmx, window)
 
 pmx.windowCreated.connect(on_windowCreated)
 
