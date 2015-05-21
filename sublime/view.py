@@ -2,38 +2,43 @@
 
 import difflib
 
-from prymatex.utils import text as textutils
+from prymatex.qt import QtCore
 
+from .object import SublimeObject
 from .selection import Selection
 from .settings import Settings
 from .region import Region
+from .edit import Edit
 
 from sublime_plugin import LISTENERS
 from sublime_plugin import TEXT_COMMANDS
 
-class View(object):
+class View(SublimeObject):
     def __init__(self, window, editor):
+        super().__init__(editor)
         self._window = window
         self._editor = editor
-        self._command_history = []
-        self._command_index = len(self._command_history) - 1
-        self._editor.document().contentsChange.connect(self.on_document_contentsChange)
-        self._event_listeners = []
-        self._commands = {}
-        self._content = ""
-        for cls in LISTENERS:
-            self.add_event_listener(cls())
-        for cls in TEXT_COMMANDS:
-            self.add_command(cls(self))
+        for klass in LISTENERS:
+            self.add_listener(klass())
+        for klass in TEXT_COMMANDS:
+            self.add_command(klass(self))
+        self.runCommand.connect(self.on_runCommand, QtCore.Qt.QueuedConnection)
+        
+    # Signals
+    def on_runCommand(self, name, args):
+        """return None	Runs the named command with the given arguments."""
+        commands = self.commands()
+        if name in commands:
+            commands[name].run(Edit(), **args)
+        else:
+            self._editor.runCommand(name, None, **args)
 
     def editor(self):
         return self._editor
 
-    def add_event_listener(self, listener):
-        self._event_listeners.append(listener)
-        self._editor.activated.connect(
-            lambda view=self: listener.on_activated(view)
-        )
+    def add_listener(self, listener):
+        super().add_listener(listener)
+        self._editor.activated.connect(lambda view=self: listener.on_activated(view))
         self._editor.deactivated.connect(lambda view=self: listener.on_deactivated(view))
         self._editor.aboutToSave.connect(lambda view=self: listener.on_pre_save(view))
         self._editor.saved.connect(lambda view=self: listener.on_post_save(view))
@@ -43,38 +48,17 @@ class View(object):
 
     def query_completions(self, prefix, locations):
         completions = []
-        for listener in self._event_listeners:
+        for listener in self.listeners():
             completions.extend(listener.on_query_completions(self, prefix, locations))
         return completions
 
     def extract_completions(self, prefix, location):
         return []
 
-    def add_command(self, command):
-        names = textutils.camelcase_to_text(command.__class__.__name__).split()
-        name = "_".join(names[:-1])
-        self._editor.addCommand(name, command)
-
-    def on_document_contentsChange(self, position, charsRemoved, charsAdded):
-        text = self._editor.toPlainText()
-        if charsRemoved:
-            self._command_history.append(
-                ('delete', { 'characters': self._content[position:position + charsRemoved] }, 0)
-            )
-        if text and charsAdded:
-            self._command_history.append(
-                ('insert', { 'characters': text[position:position + charsAdded] }, 0)
-            )
-        self._content = text
-        self._command_index = len(self._command_history) - 1
-
-    def id(self):
-        """id() int Returns a number that uniquely identifies this view."""
-        return id(self._editor)
-
     def buffer_id(self):
         """buffer_id() int Returns a number that uniquely identifies the buffer underlying this view."""
         pass
+        
     def file_name(self):
         """file_name() String The full name file the file associated with the buffer, or None if it doesn't exist on disk."""
         return self._editor.filePath()
@@ -109,12 +93,7 @@ class View(object):
     def window(self):
         """return Window	Returns a reference to the window containing the view."""
         return self._window
-
-    def run_command(self, string, args=None):
-        """return None	Runs the named TextCommand with the (optional) given arguments."""
-        args = args or {}
-        self._editor.runCommand(string, None, **args)
-
+    
     def size(self):
         """return int	Returns the number of character in the file."""
         pass
@@ -308,10 +287,7 @@ The underline styles are exclusive, either zero or one of them should be given. 
 Index 0 corresponds to the most recent command, -1 the command before that, and so on. Positive values for index indicate to look in the redo stack for commands. If the undo / redo history doesn't extend far enough, then (None, None, 0) will be returned.
 
 Setting modifying_only to True (the default is False) will only return entries that modified the buffer."""
-        index = self._command_index + index
-        if 0 <= index < len(self._command_history):
-            return self._command_history[index]
-        return (None, None, 0)
+        return self._editor.commandHistory(index, modifying_only)
 
     def change_count(self):
         """return int	Returns the current change count. Each time the buffer is modified, the change count is incremented. The change count can be used to determine if the buffer has changed since the last it was inspected."""

@@ -54,6 +54,7 @@ def active_window():
     if _id in WINDOWS:
         return WINDOWS[_id]
 
-def set_timeout(callback, delay):
-    pmx.setTimeout(delay / 1000, callback)
-
+def set_timeout(callback, delay, *args, **kwargs):
+    timer = threading.Timer(delay / 1000, callback, args, kwargs)
+    timer.name = "Sublime Timer"
+    timer.start()
