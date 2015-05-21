@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
+from .object import SublimeObject
 from .view import View
 
-class Window(object):
+class Window(SublimeObject):
     def __init__(self, window):
+        super().__init__(window)
         self._window = window
         self._views = {}
         self._window.editorCreated.connect(self.on_editorCreated)
@@ -108,10 +110,6 @@ class Window(object):
         pass
     def set_project_data(self, data):
         """ return None    Updates the project data associated with the current window. If the window is associated with a .sublime-project file, the project file will be updated on disk, otherwise the window will store the data internally.
-        """
-        pass
-    def run_command(self, string, args=None):
-        """ return None    Runs the named Command with the (optional) given arguments. Window.run_command is able to run both any sort of command, dispatching the command via input focus.
         """
         pass
     def show_quick_panel(self, items, on_done, flags=None, selected_index=None, on_highlighted=None):
