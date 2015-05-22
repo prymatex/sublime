@@ -39,4 +39,5 @@ class EventListener(metaclass=EventListenerMeta):
         pass
 
     def on_query_completions(self, view, prefix, locations):
+        """locations son puntos en el documento"""
         pass

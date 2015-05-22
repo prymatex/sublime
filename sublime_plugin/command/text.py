@@ -52,8 +52,13 @@ class AutoCompleteCommand(TextCommand):
     
     def run(self, edit, *args, **kwargs):
         alreadyTyped, start, end = self.editor.wordUnderCursor(direction="left", search=True)
-        completions, flags = self.view.query_completions(alreadyTyped, self.view.sel())
-        self.editor.showCompletion(completions, completion_prefix=alreadyTyped)
+        locations = self.view.sel()
+        completions = []
+        flags = 0
+        for listener in self.view.listeners():
+            cmpls, flags = listener.on_query_completions(self.view, alreadyTyped, locations)
+            completions.extend(cmpls)
+        self.editor.showCompletionWidget(completions, completion_prefix=alreadyTyped)
 
 class HideAutoCompleteCommand(TextCommand):
     pass

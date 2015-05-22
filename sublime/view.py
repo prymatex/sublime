@@ -46,14 +46,9 @@ class View(SublimeObject):
         self._editor.textChanged.connect(lambda view=self: listener.on_modified(view))
         self._editor.selectionChanged.connect(lambda view=self: listener.on_selection_modified(view))
 
-    def query_completions(self, prefix, locations):
-        completions = []
-        for listener in self.listeners():
-            completions.extend(listener.on_query_completions(self, prefix, locations))
-        return completions
-
-    def extract_completions(self, prefix, location):
-        return []
+    def extract_completions(self, prefix, point):
+        """Returns the completions for the given prefix, based on the contents of the buffer. Completions will be ordered by frequency, and distance from the given point, if supplied."""
+        return self._editor.extractCompletions(prefix, point)
 
     def buffer_id(self):
         """buffer_id() int Returns a number that uniquely identifies the buffer underlying this view."""
@@ -62,6 +57,7 @@ class View(SublimeObject):
     def file_name(self):
         """file_name() String The full name file the file associated with the buffer, or None if it doesn't exist on disk."""
         return self._editor.filePath()
+        
     def name(self):
         """name()	String	The name assigned to the buffer, if any"""
         pass
@@ -173,9 +169,11 @@ class View(SublimeObject):
     def expand_by_class(self, region, classes, separators=None):
         """return Region	Expands region to the left and right, until each side lands on a location that matches classes. classes is a bitwise OR of the sublime.CLASS_XXX flags. separators may be passed in, to define what characters should be considered to separate words."""
         pass
+
     def find(self, pattern, fromPosition, flags=None):
         """return Region	Returns the first Region matching the regex pattern, starting from the given point, or None if it can't be found. The optional flags parameter may be sublime.LITERAL, sublime.IGNORECASE, or the two ORed together."""
         pass
+        
     def find_all(self, pattern, flags=None, format=None, extractions=None):
         """return [Region]	Returns all (non-overlapping) regions matching the regex pattern. The optional flags parameter may be sublime.LITERAL, sublime.IGNORECASE, or the two ORed together. If a format string is given, then all matches will be formatted with the formatted string and placed into the extractions list."""
         pass
