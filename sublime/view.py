@@ -245,41 +245,44 @@ class View(SublimeObject):
     def em_width(self):
         """return real	Returns the typical character width used in the layout"""
         pass
+
     def add_regions(self, key, regions, scope=None, icon=None, flags=None):
         """return None	Add a set of regions to the view. If a set of regions already exists with the given key, they will be overwritten. The scope is used to source a color to draw the regions in, it should be the name of a scope, such as "comment" or "string". If the scope is empty, the regions won't be drawn.
-
-The optional icon name, if given, will draw the named icons in the gutter next to each region. The icon will be tinted using the color associated with the scope. Valid icon names are dot, circle, bookmark and cross. The icon name may also be a full package relative path, such as Packages/Theme - Default/dot.png.
-
-The optional flags parameter is a bitwise combination of:
-
-    sublime.DRAW_EMPTY. Draw empty regions with a vertical bar. By default, they aren't drawn at all.
-    sublime.HIDE_ON_MINIMAP. Don't show the regions on the minimap.
-    sublime.DRAW_EMPTY_AS_OVERWRITE. Draw empty regions with a horizontal bar instead of a vertical one.
-    sublime.DRAW_NO_FILL. Disable filling the regions, leaving only the outline.
-    sublime.DRAW_NO_OUTLINE. Disable drawing the outline of the regions.
-    sublime.DRAW_SOLID_UNDERLINE. Draw a solid underline below the regions.
-    sublime.DRAW_STIPPLED_UNDERLINE. Draw a stippled underline below the regions.
-    sublime.DRAW_SQUIGGLY_UNDERLINE. Draw a squiggly underline below the regions.
-    sublime.PERSISTENT. Save the regions in the session.
-    sublime.HIDDEN. Don't draw the regions. 
-
-The underline styles are exclusive, either zero or one of them should be given. If using an underline, DRAW_NO_FILL and DRAW_NO_OUTLINE should generally be passed in."""
+        The optional icon name, if given, will draw the named icons in the gutter next to each region. The icon will be tinted using the color associated with the scope. Valid icon names are dot, circle, bookmark and cross. The icon name may also be a full package relative path, such as Packages/Theme - Default/dot.png.
+        The optional flags parameter is a bitwise combination of:
+            sublime.DRAW_EMPTY. Draw empty regions with a vertical bar. By default, they aren't drawn at all.
+            sublime.HIDE_ON_MINIMAP. Don't show the regions on the minimap.
+            sublime.DRAW_EMPTY_AS_OVERWRITE. Draw empty regions with a horizontal bar instead of a vertical one.
+            sublime.DRAW_NO_FILL. Disable filling the regions, leaving only the outline.
+            sublime.DRAW_NO_OUTLINE. Disable drawing the outline of the regions.
+            sublime.DRAW_SOLID_UNDERLINE. Draw a solid underline below the regions.
+            sublime.DRAW_STIPPLED_UNDERLINE. Draw a stippled underline below the regions.
+            sublime.DRAW_SQUIGGLY_UNDERLINE. Draw a squiggly underline below the regions.
+            sublime.PERSISTENT. Save the regions in the session.
+            sublime.HIDDEN. Don't draw the regions.
+        The underline styles are exclusive, either zero or one of them should be given. If using an underline, DRAW_NO_FILL and DRAW_NO_OUTLINE should generally be passed in."""
         pass
+
     def get_regions(self, key):
         """return [regions]	Return the regions associated with the given key, if any"""
         pass
+        
     def erase_regions(self, key):
         """return None	Removed the named regions"""
         pass
+        
     def set_status(self, key, value):
         """return None	Adds the status key to the view. The value will be displayed in the status bar, in a comma separated list of all status values, ordered by key. Setting the value to the empty string will clear the status."""
-        pass
+        self._editor.setStatus(key, value)
+        
     def get_status(self, key):
         """return String	Returns the previously assigned value associated with the key, if any."""
-        pass
+        return self._editor.status(key)
+        
     def erase_status(self, key):
         """return None	Clears the named status."""
-        pass
+        return self._editor.eraseStatus(key)
+        
     def command_history(self, index, modifying_only=None):
         """return (String,Dict,int)	Returns the command name, command arguments, and repeat count for the given history entry, as stored in the undo / redo stack.
 Index 0 corresponds to the most recent command, -1 the command before that, and so on. Positive values for index indicate to look in the redo stack for commands. If the undo / redo history doesn't extend far enough, then (None, None, 0) will be returned.

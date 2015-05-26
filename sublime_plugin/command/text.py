@@ -57,6 +57,7 @@ class AutoCompleteCommand(TextCommand):
         flags = 0
         for listener in self.view.listeners():
             cmpls, flags = listener.on_query_completions(self.view, alreadyTyped, locations)
+            print(cmpls, flags)
             completions.extend(cmpls)
         self.editor.showCompletionWidget(completions, completion_prefix=alreadyTyped)
 
