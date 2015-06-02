@@ -43,7 +43,7 @@ class View(SublimeObject):
         self._editor.aboutToSave.connect(lambda view=self: listener.on_pre_save(view))
         self._editor.saved.connect(lambda view=self: listener.on_post_save(view))
         self._editor.closed.connect(lambda view=self: listener.on_close(view))
-        self._editor.keyPressed.connect(lambda event, view=self: event.text() and listener.on_modified(view))
+        self._editor.textChanged.connect(lambda view=self: listener.on_modified(view))
         self._editor.selectionChanged.connect(lambda view=self: listener.on_selection_modified(view))
 
     def extract_completions(self, prefix, point):
