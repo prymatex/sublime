@@ -76,12 +76,15 @@ class View(SublimeObject):
     def set_read_only(self, value):
         """return None	Sets the read only property on the buffer."""
         pass
+        
     def is_scratch(self):
         """return bool	Returns true if the buffer is a scratch buffer. Scratch buffers never report as being dirty."""
         pass
+        
     def set_scratch(self, value):
         """return None	Sets the scratch property on the buffer."""
         pass
+        
     def settings(self):
         """return Settings	Returns a reference to the views settings object. Any changes to this settings object will be private to this view."""
         return Settings(self._editor.settings(), self._editor)
@@ -91,16 +94,17 @@ class View(SublimeObject):
         return self._window
     
     def size(self):
-        """return int	Returns the number of character in the file."""
-        pass
+        """return int Returns the number of character in the file."""
+        return self._editor.document().characterCount()
         
-    def substr(self, region):
+    def substr(self, region_or_point):
         """return String Returns the contents of the region as a string.
         return String Returns the character to the right of the point.
         """
-        if isinstance(region, Region):
-            return self._editor.toPlainTextWithEol()[region[0]:region[1]]
-        return self._editor.document().characterAt(point)
+        text = self._editor.toPlainTextWithEol()
+        if isinstance(region_or_point, Region):
+            return text[region_or_point.begin():region_or_point.end()]
+        return textp[region_or_point]
 
     def insert(self, edit, point, string):
         """return int	Inserts the given string in the buffer at the specified point. Returns the number of characters inserted: this may be different if tabs are being translated into spaces in the current buffer."""
