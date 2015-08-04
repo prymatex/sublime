@@ -62,4 +62,9 @@ class AutoCompleteCommand(TextCommand):
         self.editor.showCompletionWidget(completions, completion_prefix=alreadyTyped)
 
 class HideAutoCompleteCommand(TextCommand):
-    pass
+    def __init__(self, view):
+        self.view = view
+        self.editor = view.editor()
+    
+    def run(self, edit, *args, **kwargs):
+        print("Fuera bicho")
