@@ -44,27 +44,3 @@ class TextCommand(metaclass=TextCommandMeta):
         
 class InsertSnippetCommand(TextCommand):
     pass
-
-class AutoCompleteCommand(TextCommand):
-    def __init__(self, view):
-        self.view = view
-        self.editor = view.editor()
-    
-    def run(self, edit, *args, **kwargs):
-        alreadyTyped, start, end = self.editor.wordUnderCursor(direction="left", search=True)
-        locations = self.view.sel()
-        completions = []
-        flags = 0
-        for listener in self.view.listeners():
-            cmpls, flags = listener.on_query_completions(self.view, alreadyTyped, locations)
-            print(cmpls, flags)
-            completions.extend(cmpls)
-        self.editor.showCompletionWidget(completions, completion_prefix=alreadyTyped)
-
-class HideAutoCompleteCommand(TextCommand):
-    def __init__(self, view):
-        self.view = view
-        self.editor = view.editor()
-    
-    def run(self, edit, *args, **kwargs):
-        print("Fuera bicho")

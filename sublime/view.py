@@ -31,7 +31,7 @@ class View(SublimeObject):
         if name in commands:
             commands[name].run(Edit(), **args)
         else:
-            self._editor.runCommand(name, None, **args)
+            self._editor.runCommand(name, **args)
 
     def editor(self):
         return self._editor
@@ -45,6 +45,18 @@ class View(SublimeObject):
         self._editor.closed.connect(lambda view=self: listener.on_close(view))
         self._editor.textChanged.connect(lambda view=self: listener.on_modified(view))
         self._editor.selectionChanged.connect(lambda view=self: listener.on_selection_modified(view))
+        self._editor.queryCompletions.connect(self.on_editor_queryCompletions)
+
+    def on_editor_queryCompletions(self, automatic):
+        alreadyTyped, start, end = self.editor().wordUnderCursor(direction="left", search=True)
+        locations = self.sel()
+        completions = []
+        flags = 0
+        for listener in self.listeners():
+            cmpls, flags = listener.on_query_completions(self, alreadyTyped, locations)
+            print(cmpls, flags)
+            completions.extend(cmpls)
+        self.editor().showCompletionWidget(completions, completion_prefix=alreadyTyped)
 
     def extract_completions(self, prefix, point):
         """Returns the completions for the given prefix, based on the contents of the buffer. Completions will be ordered by frequency, and distance from the given point, if supplied."""
@@ -61,6 +73,7 @@ class View(SublimeObject):
     def name(self):
         """name()	String	The name assigned to the buffer, if any"""
         pass
+        
     def set_name(self, name):
         """set_name(name)	None	Assigns a name to the buffer"""
         pass
