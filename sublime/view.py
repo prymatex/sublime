@@ -77,15 +77,19 @@ class View(SublimeObject):
     def set_name(self, name):
         """set_name(name)	None	Assigns a name to the buffer"""
         pass
+        
     def is_loading(self):
         """is_loading()	bool	Returns true if the buffer is still loading from disk, and not ready for use."""
         pass
+        
     def is_dirty(self):
         """is_dirty()	bool	Returns true if there are any unsaved modifications to the buffer."""
-        pass    
+        pass
+            
     def is_read_only(self):
         """is_read_only()	bool	Returns true if the buffer may not be modified."""
         pass
+        
     def set_read_only(self, value):
         """return None	Sets the read only property on the buffer."""
         pass
@@ -122,9 +126,11 @@ class View(SublimeObject):
     def insert(self, edit, point, string):
         """return int	Inserts the given string in the buffer at the specified point. Returns the number of characters inserted: this may be different if tabs are being translated into spaces in the current buffer."""
         pass
+        
     def erase(self, edit, region):
         """return None	Erases the contents of the region from the buffer."""
         pass
+        
     def replace(self, edit, region, string):
         """return None	Replaces the contents of the region with the given string."""
         pass
@@ -156,15 +162,18 @@ class View(SublimeObject):
     def lines(self, region):
         """return [Region]	Returns a list of lines (in sorted order) intersecting the region."""
         pass
+        
     def split_by_newlines(self, region):
         """return [Region]	Splits the region up such that each region returned exists on exactly one line."""
         pass
+        
     def word(self, point):
         """return Region	Returns the word that contains the point."""
         pass
     def word(self, region):
         """return Region	Returns a modified copy of region such that it starts at the beginning of a word, and ends at the end of a word. Note that it may span several words."""
         pass
+        
     def classify(self, point):
         """return int Classifies pt, returning a bitwise OR of zero or more of these flags:
         CLASS_WORD_START
@@ -177,12 +186,15 @@ class View(SublimeObject):
         CLASS_LINE_END
         CLASS_EMPTY_LINE"""
         pass
+        
     def find_by_class(self, point, forward, classes, separators=None):
         """find_by_class(point, forward, classes, <separators>) Region	Finds the next location after point that matches the given classes. If forward is False, searches backwards instead of forwards. classes is a bitwise OR of the sublime.CLASS_XXX flags. separators may be passed in, to define what characters should be considered to separate words."""
         pass
+        
     def expand_by_class(self, point, classes, separators=None):
         "expand_by_class(point, classes, <separators>) Region	Expands point to the left and right, until each side lands on a location that matches classes. classes is a bitwise OR of the sublime.CLASS_XXX flags. separators may be passed in, to define what characters should be considered to separate words."
         pass
+        
     def expand_by_class(self, region, classes, separators=None):
         """return Region	Expands region to the left and right, until each side lands on a location that matches classes. classes is a bitwise OR of the sublime.CLASS_XXX flags. separators may be passed in, to define what characters should be considered to separate words."""
         pass
