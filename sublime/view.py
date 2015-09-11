@@ -68,7 +68,7 @@ class View(SublimeObject):
         
     def file_name(self):
         """file_name() String The full name file the file associated with the buffer, or None if it doesn't exist on disk."""
-        return self._editor.filePath()
+        return self._editor.windowFilePath()
         
     def name(self):
         """name()	String	The name assigned to the buffer, if any"""
