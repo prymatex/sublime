@@ -48,15 +48,16 @@ class View(SublimeObject):
         self._editor.queryCompletions.connect(self.on_editor_queryCompletions)
 
     def on_editor_queryCompletions(self, automatic):
-        alreadyTyped, start, end = self.editor().wordUnderCursor(direction="left", search=True)
-        locations = self.sel()
-        completions = []
-        flags = 0
-        for listener in self.listeners():
-            cmpls, flags = listener.on_query_completions(self, alreadyTyped, locations)
-            print(cmpls, flags)
-            completions.extend(cmpls)
-        self.editor().showCompletionWidget(completions, completion_prefix=alreadyTyped)
+        alreadyTyped, start, end = self.editor().textUnderCursor(direction="left", search=True)
+        if alreadyTyped:
+            locations = self.sel()
+            completions = []
+            flags = 0
+            for listener in self.listeners():
+                cmpls, flags = listener.on_query_completions(self, alreadyTyped, locations)
+                completions.extend(cmpls)
+            if completions:
+                self.editor().showCompletionWidget(completions)
 
     def extract_completions(self, prefix, point):
         """Returns the completions for the given prefix, based on the contents of the buffer. Completions will be ordered by frequency, and distance from the given point, if supplied."""
