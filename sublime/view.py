@@ -49,7 +49,7 @@ class View(SublimeObject):
 
     def on_editor_queryCompletions(self, automatic):
         alreadyTyped, start, end = self.editor().textUnderCursor(direction="left", search=True)
-        if alreadyTyped:
+        if alreadyTyped or not automatic:
             locations = self.sel()
             completions = []
             flags = 0
