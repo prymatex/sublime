@@ -59,7 +59,7 @@ class Window(SublimeObject):
         """ 
         return [View]    Returns all open views in the window.
         """
-        pass
+        return self._views.values()
         
     def views_in_group(self, group):
         """ 
@@ -110,18 +110,23 @@ class Window(SublimeObject):
         folders = set()
         for project in self._application.projectManager.getAllProjects():
             folders.update(project.source_folders)
-        print(folders)
         return folders
 
     def project_file_name(self):
-        """ return String    Returns name of the currently opened project file, if any.
+        """ return String Returns name of the currently opened project file, if any.
         """
-        pass
+        editor = self._window.currentEditor()
+        project = editor.project()
+        if project is not None:
+            return project.path()
         
     def project_data(self):
         """ return Dictionary    Returns the project data associated with the current window. The data is in the same format as the contents of a .sublime-project file.
         """
-        pass
+        editor = self._window.currentEditor()
+        project = editor.project()
+        if project is not None:
+            return project.dump()
         
     def set_project_data(self, data):
         """ return None    Updates the project data associated with the current window. If the window is associated with a .sublime-project file, the project file will be updated on disk, otherwise the window will store the data internally.
